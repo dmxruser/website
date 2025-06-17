@@ -4,8 +4,8 @@ body {
   place-items: center;
   min-height: 100vh;
   margin: 0;
+  background-color: rgb(106, 124, 131);
   padding: 20px;
-  background: #f0f0f0;
 }
 
 /* THE BARRIER — your neat box that keeps everything inside and looks cool */
@@ -14,7 +14,7 @@ body {
   padding: 30px;
   max-width: 900px; /* limit width to force wrapping */
   width: 100%;
-  background: #fff;
+  background: rgb(100, 116, 122);
   box-shadow: 12px 12px 0 #111;
   box-sizing: border-box;
 }
@@ -33,10 +33,14 @@ body {
   outline: 5px solid black;
   box-shadow: 10px 10px 0 10px #080808;
   padding: 20px;
-  background: #fff;
+  background: rgb(209, 232, 240);
   flex: 1 1 280px;  /* flex-grow, flex-shrink, base width */
   max-width: 400px; /* max width so they don't blow up */
   box-sizing: border-box;
+}
+
+.container2 {
+  display: flex;
 }
 
 /* Fira Mono font helpers if you want */
