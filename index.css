@@ -1,0 +1,29 @@
+
+body {
+    font-family: 'Fira Mono', monospace;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+.box { 
+    outline: 5px solid  black;
+      box-shadow: 10px 10px 0 10px #080808;
+}
+.fira-mono-regular {
+  font-family: "Fira Mono", monospace;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.fira-mono-medium {
+  font-family: "Fira Mono", monospace;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.fira-mono-bold {
+  font-family: "Fira Mono", monospace;
+  font-weight: 700;
+  font-style: normal;
+}
