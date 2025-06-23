@@ -31,11 +31,12 @@ body {
 /* YOUR BOXES */
 .box {
   outline: 5px solid black;
-  box-shadow: 10px 10px 0 10px #080808;
+  box-shadow: 10px 10px 0 5px #080808;
   padding: 20px;
   background: rgb(209, 232, 240);
   flex: 1 1 280px;  /* flex-grow, flex-shrink, base width */
-  max-width: 400px; /* max width so they don't blow up */
+  max-width: 400px;
+  min-width: 240px;  /* max width so they don't blow up */
   box-sizing: border-box;
 }
 
