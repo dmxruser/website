@@ -7,6 +7,10 @@ body {
   background-color: rgb(106, 124, 131);
   padding: 20px;
 }
+a {
+  text-decoration: none;
+}
+
 
 /* THE BARRIER — your neat box that keeps everything inside and looks cool */
 .barrier {
