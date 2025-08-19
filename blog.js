@@ -1,39 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
   const blogPostsContainer = document.getElementById('blog-posts');
 
-  async function displayPosts() {
-    try {
-      // First, fetch the list of posts
-      const response = await fetch('posts.json');
-      if (!response.ok) {
-        throw new Error('Could not fetch posts.json');
-      }
-      const postFiles = await response.json();
+  const displayError = (message) => {
+    console.error(message);
+    const errorElement = document.createElement('div');
+    errorElement.classList.add('box');
+    errorElement.innerHTML = `<h1>Error</h1><p>${message}</p>`;
+    blogPostsContainer.innerHTML = ''; // Clear previous content
+    blogPostsContainer.appendChild(errorElement);
+  };
 
-      // Now, fetch and display each post sequentially
-      for (const postFile of postFiles) {
-        const postResponse = await fetch(`markdown.files/${postFile}`);
-        if (!postResponse.ok) {
-          console.error(`Failed to fetch ${postFile}`);
-          continue; // Skip to the next post
+  fetch('posts.json')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok when fetching posts.json.');
+      }
+      return response.json();
+    })
+    .then(postFiles => {
+      if (!Array.isArray(postFiles)) {
+        throw new Error('posts.json is not a valid list.');
+      }
+      // Create an array of fetch promises
+      const fetchPromises = postFiles.map(postFile => {
+        return fetch(`markdown.files/${postFile}`)
+          .then(response => {
+            if (!response.ok) {
+              // Log error for the specific file but don't stop the others
+              console.error(`Failed to fetch ${postFile}`);
+              return null; 
+            }
+            return response.text();
+          });
+      });
+      // Wait for all fetches to complete
+      return Promise.all(fetchPromises);
+    })
+    .then(markdowns => {
+      // Clear any existing content (like error messages)
+      blogPostsContainer.innerHTML = ''; 
+      
+      markdowns.forEach(markdown => {
+        // If a fetch failed, the markdown will be null, so we skip it
+        if (markdown === null) {
+          return;
         }
-        const markdown = await postResponse.text();
-        const htmlContent = marked.parse(markdown);
         
+        const htmlContent = marked.parse(markdown);
         const postElement = document.createElement('div');
         postElement.classList.add('box');
         postElement.innerHTML = htmlContent;
         blogPostsContainer.appendChild(postElement);
-      }
-
-    } catch (error) {
-      console.error('Error loading blog posts:', error);
-      const errorElement = document.createElement('div');
-      errorElement.classList.add('box');
-      errorElement.innerHTML = '<h1>Error</h1><p>Could not load blog posts. Please try again later.</p>';
-      blogPostsContainer.appendChild(errorElement);
-    }
-  }
-
-  displayPosts();
+      });
+    })
+    .catch(error => {
+      displayError(error.message);
+    });
 });
