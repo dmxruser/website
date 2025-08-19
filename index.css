@@ -1,7 +1,7 @@
 body {
   font-family: 'Fira Mono', monospace;
   display: grid;
-  place-items: center;
+  place-items: start center;
   min-height: 100vh;
   margin: 0;
   background-color: rgb(106, 124, 131);
