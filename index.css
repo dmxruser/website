@@ -1,13 +1,17 @@
 body {
   font-family: 'Fira Mono', monospace;
-  display: grid;
-  place-items: start center;
-  align-content: start; /* This is the fix */
+  /* Grid properties removed for predictable top-down layout */
   min-height: 100vh;
   margin: 0;
   background-color: rgb(106, 124, 131);
   padding: 50px 20px;
 }
+
+.page-wrapper {
+  max-width: 900px;
+  margin: 0 auto; /* Center the wrapper horizontally */
+}
+
 a {
   text-decoration: none;
 }
@@ -79,7 +83,7 @@ a {
   padding: 10px;
   background: rgb(100, 116, 122);
   box-shadow: 12px 12px 0 #111;
-  margin-bottom: 0; /* Space between nav and main content */
+  margin-bottom: 20px; /* Controlled space between nav and main content */
   text-align: center;
 }
 
