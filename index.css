@@ -5,7 +5,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background-color: rgb(106, 124, 131);
-  padding: 20px;
+  padding: 50px 20px;
 }
 a {
   text-decoration: none;
