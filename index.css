@@ -71,3 +71,24 @@ a {
   flex-direction: column;
   align-items: center;
 }
+
+/* NAVIGATION STYLES */
+.nav-barrier {
+  border: 6px double black;
+  padding: 15px;
+  background: rgb(100, 116, 122);
+  box-shadow: 12px 12px 0 #111;
+  margin-bottom: 30px; /* Space between nav and main content */
+  text-align: center;
+}
+
+.nav-links a {
+  font-size: 1.2em;
+  color: black;
+  margin: 0 15px;
+  font-weight: bold;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
