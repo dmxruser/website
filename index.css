@@ -15,7 +15,7 @@ a {
 /* THE BARRIER — your neat box that keeps everything inside and looks cool */
 .barrier {
   border: 6px double black;
-  padding: 30px;
+  padding: 15px 30px; /* Reduced top/bottom padding */
   max-width: 900px; /* limit width to force wrapping */
   width: 100%;
   background: rgb(100, 116, 122);
