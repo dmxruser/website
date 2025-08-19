@@ -78,7 +78,7 @@ a {
   padding: 15px;
   background: rgb(100, 116, 122);
   box-shadow: 12px 12px 0 #111;
-  margin-bottom: 30px; /* Space between nav and main content */
+  margin-bottom: 15px; /* Space between nav and main content */
   text-align: center;
 }
 
