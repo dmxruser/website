@@ -11,9 +11,14 @@ async function build() {
     
     // Optional: Sort files, for example, by name. 
     // For more advanced sorting like by date, you'd need to read file metadata or frontmatter.
-    markdownFiles.sort(); 
+    const sortedFiles = (await Promise.all(markdownFiles.map(async file => {
+      const stats = await fs.stat(path.join(postsDir, file));
+      return { file, birthtime: stats.birthtime };
+    })))
+    .sort((a, b) => b.birthtime - a.birthtime)
+    .map(fileObj => fileObj.file);
 
-    await fs.writeFile(outputFile, JSON.stringify(markdownFiles, null, 2));
+    await fs.writeFile(outputFile, JSON.stringify(sortedFiles, null, 2));
     console.log('Successfully created posts.json with the following files:', markdownFiles);
   } catch (error) {
     console.error('Error building posts list:', error);
