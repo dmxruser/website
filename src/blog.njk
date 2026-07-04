@@ -1,0 +1,31 @@
+---
+layout: base.njk
+title: "dmxruser: blog"
+permalink: /blog/index.html
+---
+
+<div class="blog-archive">
+  <h1 class="page-title" style="display: flex; align-items: center; gap: 0.5rem;">
+    <span>blog</span>
+    <a href="/feed.xml" target="_blank" class="title-rss" aria-label="Blog RSS">
+      <img src="/assets/rss-icon.png" alt="RSS" class="title-rss-img">
+    </a>
+  </h1>
+  
+  <div class="posts-list">
+    {%- for post in collections.posts %}
+      <article class="post-item">
+        <h2 class="post-item-title">
+          <a href="{{ post.url }}">{{ post.data.title | lower }}</a>
+        </h2>
+        <div class="post-item-meta">
+          <time datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate | lower }}</time>
+        </div>
+        <p class="post-item-description">
+          {{ post.data.description | lower }}
+        </p>
+        <a href="{{ post.url }}" class="read-more-inline">read more</a>
+      </article>
+    {%- endfor %}
+  </div>
+</div>

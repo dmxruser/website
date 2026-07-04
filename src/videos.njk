@@ -1,0 +1,187 @@
+---
+layout: base.njk
+title: "dmxruser: videos"
+permalink: /videos/index.html
+---
+
+{%- set featured_video = null %}
+{%- for video in videos %}
+  {%- if video.type == 'video' and not featured_video %}
+    {%- set featured_video = video %}
+  {%- endif %}
+{%- endfor %}
+
+{# Fallback to first video if no long-form videos are present #}
+{%- if not featured_video and videos.length > 0 %}
+  {%- set featured_video = videos[0] %}
+{%- endif %}
+
+<div class="videos-page">
+  <h1 class="page-title">videos</h1>
+  
+  <div class="video-grid" id="video-grid">
+    {%- if featured_video %}
+      <div class="video-card glass glass-sm featured type-{{ featured_video.type }}" style="--bg-offset: 5%">
+        <div class="video-embed-wrapper">
+          <iframe 
+            src="https://www.youtube.com/embed/{{ featured_video.id }}" 
+            title="{{ featured_video.title }}" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="video-card-glow"></div>
+        <div class="video-info">
+          <span class="video-type-tag">{{ featured_video.type | lower }}</span>
+          <h2 class="video-card-title">
+            <a href="{{ featured_video.url }}" target="_blank">{{ featured_video.title | lower }}</a>
+          </h2>
+          <div class="video-card-meta">
+            <span>{{ featured_video.views }}</span>
+            <span class="meta-dot">&bull;</span>
+            <span>{{ featured_video.date }}</span>
+          </div>
+        </div>
+      </div>
+    {%- endif %}
+
+    {%- set normalRenderedCount = 0 %}
+    {%- for video in videos %}
+      {%- if video.uniqId != featured_video.uniqId and normalRenderedCount < 5 %}
+        {%- set normalRenderedCount = normalRenderedCount + 1 %}
+        <div class="video-card glass glass-sm type-{{ video.type }}" style="--bg-offset: {{ loop.index * 12 }}%">
+          <div class="video-embed-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/{{ video.id }}" 
+              title="{{ video.title }}" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-card-glow"></div>
+          <div class="video-info">
+            <span class="video-type-tag">{{ video.type | lower }}</span>
+            <h2 class="video-card-title">
+              <a href="{{ video.url }}" target="_blank">{{ video.title | lower }}</a>
+            </h2>
+            <div class="video-card-meta">
+              <span>{{ video.views }}</span>
+              <span class="meta-dot">&bull;</span>
+              <span>{{ video.date }}</span>
+            </div>
+          </div>
+        </div>
+      {%- endif %}
+    {%- endfor %}
+  </div>
+
+  {# Loading trigger #}
+  <div id="loading-trigger" class="loading-trigger">
+    <div class="spinner"></div>
+    <span class="loading-text">loading more videos...</span>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const videoGrid = document.getElementById('video-grid');
+    const loadingTrigger = document.getElementById('loading-trigger');
+    
+    // Store uniqIds of statically rendered videos to prevent duplication
+    const renderedIds = new Set();
+    {%- if featured_video %}
+      renderedIds.add("{{ featured_video.uniqId }}");
+    {%- endif %}
+    {%- set normalCheck = 0 %}
+    {%- for video in videos %}
+      {%- if video.uniqId != featured_video.uniqId and normalCheck < 5 %}
+        {%- set normalCheck = normalCheck + 1 %}
+        renderedIds.add("{{ video.uniqId }}");
+      {%- endif %}
+    {%- endfor %}
+
+    let allVideos = [];
+    let loading = false;
+
+    // Fetch dynamic JSON data generated during the build process
+    fetch('/api/videos.json')
+      .then(res => res.json())
+      .then(data => {
+        allVideos = data.filter(video => !renderedIds.has(video.uniqId));
+        if (allVideos.length === 0) {
+          loadingTrigger.style.display = 'none';
+        } else {
+          // Initialize intersection observer to trigger load on scroll
+          const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !loading) {
+              loadMore();
+            }
+          }, { threshold: 0.1, rootMargin: '0px 0px 200px 0px' });
+          
+          observer.observe(loadingTrigger);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load videos API:', err);
+        loadingTrigger.style.display = 'none';
+      });
+
+    function loadMore() {
+      if (allVideos.length === 0) {
+        loadingTrigger.style.display = 'none';
+        return;
+      }
+      
+      loading = true;
+      loadingTrigger.classList.add('active');
+      
+      // Artificial delay for an incredibly smooth loading animation experience
+      setTimeout(() => {
+        const chunk = allVideos.splice(0, 4);
+        
+        chunk.forEach(video => {
+          const card = document.createElement('div');
+          card.className = `video-card glass glass-sm type-${video.type}`;
+          card.style.setProperty('--bg-offset', `${Math.random() * 100}%`);
+          
+          card.innerHTML = `
+            <div class="video-embed-wrapper">
+              <iframe 
+                src="https://www.youtube.com/embed/${video.id}" 
+                title="${video.title}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin" 
+                allowfullscreen>
+              </iframe>
+            </div>
+            <div class="video-card-glow"></div>
+            <div class="video-info">
+              <span class="video-type-tag">${video.type.toLowerCase()}</span>
+              <h2 class="video-card-title">
+                <a href="${video.url}" target="_blank">${video.title.toLowerCase()}</a>
+              </h2>
+              <div class="video-card-meta">
+                <span>${video.views}</span>
+                <span class="meta-dot">&bull;</span>
+                <span>${video.date}</span>
+              </div>
+            </div>
+          `;
+          videoGrid.appendChild(card);
+        });
+        
+        loading = false;
+        loadingTrigger.classList.remove('active');
+        
+        if (allVideos.length === 0) {
+          loadingTrigger.style.display = 'none';
+        }
+      }, 750);
+    }
+  });
+</script>

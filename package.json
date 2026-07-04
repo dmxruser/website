@@ -1,12 +1,12 @@
 {
-  "name": "dmxruser-blog",
+  "name": "my-site",
   "version": "1.0.0",
-  "description": "My personal blog.",
-  "main": "index.js",
   "scripts": {
-    "build": "node build.js"
+    "build": "npx @11ty/eleventy",
+    "serve": "npx @11ty/eleventy --serve"
   },
-  "keywords": [],
-  "author": "dmxruser",
-  "license": "ISC"
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-rss": "^2.0.0"
+  }
 }
